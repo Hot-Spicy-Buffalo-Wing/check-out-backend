@@ -1,0 +1,52 @@
+Table "user" {
+  "uuid" UUID [not null]
+  "name" TEXT [not null]
+  "created_at" TIMESTAMP(3) [not null, default: `CURRENT_TIMESTAMP`]
+
+  Indexes {
+    uuid [pk, name: "user_pkey"]
+  }
+}
+
+Table "file" {
+  "uuid" TEXT [not null]
+  "name" TEXT [not null]
+  "created_at" TIMESTAMP(3) [not null, default: `CURRENT_TIMESTAMP`]
+  "url" TEXT [not null]
+  "post_id" INTEGER [not null]
+
+  Indexes {
+    uuid [pk, name: "file_pkey"]
+  }
+}
+
+Table "content" {
+  "id" INTEGER [not null]
+  "title" TEXT
+  "body" TEXT [not null]
+  "created_at" TIMESTAMP(3) [not null, default: `CURRENT_TIMESTAMP`]
+  "post_id" INTEGER [not null]
+
+  Indexes {
+    (id, post_id) [pk, name: "content_pkey"]
+  }
+}
+
+Table "post" {
+  "id" SERIAL [not null, increment]
+  "views" INTEGER [not null, default: 0]
+  "created_at" TIMESTAMP(3) [not null, default: `CURRENT_TIMESTAMP`]
+  "updated_at" TIMESTAMP(3) [not null, default: `CURRENT_TIMESTAMP`]
+  "deleted_at" TIMESTAMP(3)
+  "author_id" UUID [not null]
+
+  Indexes {
+    id [pk, name: "post_pkey"]
+  }
+}
+
+Ref "file_post_id_fkey":"post"."id" < "file"."post_id" [update: cascade, delete: restrict]
+
+Ref "content_post_id_fkey":"post"."id" < "content"."post_id" [update: cascade, delete: restrict]
+
+Ref "post_author_id_fkey":"user"."uuid" < "post"."author_id" [update: cascade, delete: restrict]

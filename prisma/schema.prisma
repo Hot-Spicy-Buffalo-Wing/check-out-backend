@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  uuid      String   @id @db.Uuid
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  Post      Post[]
+
+  @@map("user")
+}
+
+model File {
+  uuid      String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  url       String
+
+  postId Int  @map("post_id")
+  post   Post @relation(fields: [postId], references: [id])
+
+  @@map("file")
+}
+
+model Content {
+  id Int
+
+  title     String?
+  body      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  postId Int  @map("post_id")
+  notice Post @relation(fields: [postId], references: [id])
+
+  @@id([id, postId])
+  @@map("content")
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+
+  views     Int       @default(0)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  authorId String    @map("author_id") @db.Uuid
+  author   User      @relation(fields: [authorId], references: [uuid])
+  contents Content[]
+  File     File[]
+
+  @@map("post")
+}
