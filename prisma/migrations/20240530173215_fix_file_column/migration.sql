@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "file" ADD COLUMN     "order" INTEGER NOT NULL DEFAULT 0;
