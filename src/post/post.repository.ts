@@ -13,7 +13,35 @@ export class PostRepository {
   private readonly logger = new Logger(PostRepository.name);
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createPost({ title, body, imageUrl }: CreatePostDto, userUuid: string) {
+  async getPost(id: number) {
+    this.logger.log('getPost');
+    return this.prismaService.post.findUniqueOrThrow({
+      where: {
+        id,
+        deletedAt: null,
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
+            uuid: true,
+          },
+        },
+        contents: {
+          select: {
+            title: true,
+            body: true,
+          },
+        },
+        files: { select: { url: true } },
+      },
+    });
+  }
+
+  async createPost(
+    { title, body, imageUrls }: CreatePostDto,
+    userUuid: string,
+  ) {
     this.logger.log('createPost');
     return this.prismaService.post
       .create({
@@ -30,11 +58,14 @@ export class PostRepository {
             },
           },
           createdAt: new Date(),
-          file: {
-            create: {
-              name: title,
-              url: imageUrl,
-            },
+          files: {
+            create: [
+              ...imageUrls.map((imageUrl, idx) => ({
+                order: idx,
+                name: title,
+                url: imageUrl,
+              })),
+            ],
           },
         },
       })

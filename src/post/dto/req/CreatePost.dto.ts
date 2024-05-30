@@ -28,5 +28,5 @@ export class CreatePostDto {
   })
   @IsString()
   @IsNotEmpty()
-  imageUrl: string = '';
+  imageUrls: string[] = [];
 }
