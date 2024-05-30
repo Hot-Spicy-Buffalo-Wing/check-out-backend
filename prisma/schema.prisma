@@ -17,7 +17,7 @@ model User {
   uuid      String   @id @db.Uuid
   name      String
   createdAt DateTime @default(now()) @map("created_at")
-  Post      Post[]
+  post      Post[]
 
   @@map("user")
 }
@@ -35,8 +35,6 @@ model File {
 }
 
 model Content {
-  id Int
-
   title     String?
   body      String
   createdAt DateTime @default(now()) @map("created_at")
@@ -44,7 +42,7 @@ model Content {
   postId Int  @map("post_id")
   notice Post @relation(fields: [postId], references: [id])
 
-  @@id([id, postId])
+  @@id([postId])
   @@map("content")
 }
 
@@ -59,7 +57,7 @@ model Post {
   authorId String    @map("author_id") @db.Uuid
   author   User      @relation(fields: [authorId], references: [uuid])
   contents Content[]
-  File     File[]
+  file     File[]
 
   @@map("post")
 }
