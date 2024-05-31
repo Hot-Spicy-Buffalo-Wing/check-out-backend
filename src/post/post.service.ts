@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/req/CreatePost.dto';
 import { PostRepository } from './post.repository';
 import { PostMapper } from './post.mapper';
+import { UpdatePostDto } from './dto/req/UpdatePost.dto';
 
 @Injectable()
 export class PostService {
@@ -17,5 +18,17 @@ export class PostService {
 
   async createPost(createPostDto: CreatePostDto, userUuid: string) {
     return this.postRepository.createPost(createPostDto, userUuid);
+  }
+
+  async updatePost(updatePostDto: UpdatePostDto, id: number, userUuid: string) {
+    const post = await this.postRepository.getPost(id);
+
+    if (post.author.uuid !== userUuid) {
+      throw new ForbiddenException();
+    }
+
+    await this.postRepository.updatePost(updatePostDto, id, userUuid);
+
+    return this.getPost(id);
   }
 }

@@ -4,11 +4,13 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/req/CreatePost.dto';
 import { ConfigService } from '@nestjs/config';
+import { UpdatePostDto } from './dto/req/UpdatePost.dto';
 
 @Controller('post')
 export class PostController {
@@ -27,5 +29,13 @@ export class PostController {
   @Post()
   async createPost(@Body() createPostDto: CreatePostDto) {
     return this.postService.createPost(createPostDto, this.userUuidForDev);
+  }
+
+  @Patch(':id')
+  async updatePost(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
+    return this.postService.updatePost(updatePostDto, id, this.userUuidForDev);
   }
 }

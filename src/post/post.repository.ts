@@ -7,6 +7,7 @@ import {
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto } from './dto/req/CreatePost.dto';
+import { UpdatePostDto } from './dto/req/UpdatePost.dto';
 
 @Injectable()
 export class PostRepository {
@@ -80,6 +81,42 @@ export class PostRepository {
           throw new InternalServerErrorException('Database Error');
         }
         this.logger.error('createNotice error');
+        this.logger.debug(error);
+        throw new InternalServerErrorException('Unknown Error');
+      });
+  }
+
+  async updatePost(
+    { title, body }: UpdatePostDto,
+    id: number,
+    userUuid: string,
+  ) {
+    this.logger.log('updatePost');
+    await this.prismaService.post
+      .update({
+        where: { id, authorId: userUuid, deletedAt: null },
+        data: {
+          updatedAt: new Date(),
+          contents: {
+            update: {
+              where: {
+                postId: id,
+              },
+              data: {
+                title,
+                body,
+              },
+            },
+          },
+        },
+      })
+      .catch((error) => {
+        if (error instanceof PrismaClientKnownRequestError) {
+          this.logger.error('updatePost error');
+          this.logger.debug(error);
+          throw new InternalServerErrorException('Database Error');
+        }
+        this.logger.error('updatePost Unknown Error');
         this.logger.debug(error);
         throw new InternalServerErrorException('Unknown Error');
       });
