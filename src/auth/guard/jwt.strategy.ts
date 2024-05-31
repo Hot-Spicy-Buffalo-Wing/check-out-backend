@@ -17,7 +17,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: { userUuid: string }) {
-    console.log(payload);
     return await this.userRepository.getUserByUuid(payload.userUuid);
   }
 }
