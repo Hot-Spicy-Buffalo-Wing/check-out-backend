@@ -84,6 +84,14 @@ export class PostRepository {
             ],
           },
         },
+        select: {
+          id: true,
+          views: true,
+          author: { select: { name: true, uuid: true } },
+          contents: { select: { title: true, body: true } },
+          files: { select: { url: true } },
+          createdAt: true,
+        },
       })
       .catch((error) => {
         if (error instanceof PrismaClientKnownRequestError) {
@@ -152,7 +160,6 @@ export class PostRepository {
       })
       .catch((error) => {
         if (error instanceof PrismaClientKnownRequestError) {
-          console.log(error);
           if (error.code === 'P2025') {
             this.logger.debug(`Post with id ${id} not found`);
             throw new NotFoundException(`Post with id ${id} not found`);

@@ -7,11 +7,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/req/CreatePost.dto';
 import { ConfigService } from '@nestjs/config';
 import { UpdatePostDto } from './dto/req/UpdatePost.dto';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { GetUser } from 'src/user/decorator/get-user.decorator';
 
 @Controller('post')
 export class PostController {
@@ -20,28 +23,36 @@ export class PostController {
     private readonly configService: ConfigService,
   ) {}
 
-  userUuidForDev = this.configService.get<string>('TEST_USERUUID') as string;
-
   @Get(':id')
-  async getPost(@Param('id', ParseIntPipe) id: number) {
+  getPost(@Param('id', ParseIntPipe) id: number) {
     return this.postService.getPost(id);
   }
 
   @Post()
-  async createPost(@Body() createPostDto: CreatePostDto) {
-    return this.postService.createPost(createPostDto, this.userUuidForDev);
+  @UseGuards(JwtAuthGuard)
+  createPost(
+    @GetUser() userUuid: string,
+    @Body() createPostDto: CreatePostDto,
+  ) {
+    return this.postService.createPost(createPostDto, userUuid);
   }
 
   @Patch(':id')
-  async updatePost(
+  @UseGuards(JwtAuthGuard)
+  updatePost(
+    @GetUser() userUuid: string,
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePostDto: UpdatePostDto,
   ) {
-    return this.postService.updatePost(updatePostDto, id, this.userUuidForDev);
+    return this.postService.updatePost(updatePostDto, id, userUuid);
   }
 
   @Delete(':id')
-  async deletePost(@Param('id', ParseIntPipe) id: number) {
-    return this.postService.deletePost(id, this.userUuidForDev);
+  @UseGuards(JwtAuthGuard)
+  deletePost(
+    @GetUser() userUuid: string,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.postService.deletePost(id, userUuid);
   }
 }
