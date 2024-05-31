@@ -17,7 +17,12 @@ export class PostService {
   }
 
   async createPost(createPostDto: CreatePostDto, userUuid: string) {
-    return this.postRepository.createPost(createPostDto, userUuid);
+    const rawPost = await this.postRepository.createPost(
+      createPostDto,
+      userUuid,
+    );
+
+    return this.postMapper.processPost(rawPost);
   }
 
   async updatePost(updatePostDto: UpdatePostDto, id: number, userUuid: string) {

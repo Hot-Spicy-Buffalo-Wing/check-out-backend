@@ -1,10 +1,7 @@
-import { ConfigService } from '@nestjs/config';
 import { PostFullContent } from './types/PostFullContent';
-// import { PostFullContent } from './types/PostFullContent';
 
 export class PostMapper {
-  // 나중에 필요할 것으로 예상됨
-  constructor(private readonly configService: ConfigService) {}
+  constructor() {}
 
   processPost({
     id,
@@ -21,7 +18,7 @@ export class PostMapper {
       createdAt,
       updatedAt,
       author,
-      contents,
+      contents: contents[0],
       imageUrls: files.map(({ url }: any) => `${url}`),
     };
   }

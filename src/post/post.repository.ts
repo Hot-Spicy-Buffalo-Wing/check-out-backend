@@ -84,13 +84,10 @@ export class PostRepository {
             ],
           },
         },
-        select: {
-          id: true,
-          views: true,
+        include: {
           author: { select: { name: true, uuid: true } },
           contents: { select: { title: true, body: true } },
           files: { select: { url: true } },
-          createdAt: true,
         },
       })
       .catch((error) => {
