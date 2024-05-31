@@ -31,4 +31,16 @@ export class PostService {
 
     return this.getPost(id);
   }
+
+  async deletePost(id: number, userUuid: string) {
+    const post = await this.postRepository.getPost(id);
+
+    if (post.author.uuid !== userUuid) {
+      throw new ForbiddenException();
+    }
+
+    //fileService를 이용해 실제 file 지우기
+
+    return this.postRepository.deletePost(id, userUuid);
+  }
 }

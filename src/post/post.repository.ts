@@ -16,27 +16,42 @@ export class PostRepository {
 
   async getPost(id: number) {
     this.logger.log('getPost');
-    return this.prismaService.post.findUniqueOrThrow({
-      where: {
-        id,
-        deletedAt: null,
-      },
-      include: {
-        author: {
-          select: {
-            name: true,
-            uuid: true,
-          },
+    return this.prismaService.post
+      .findUniqueOrThrow({
+        where: {
+          id,
+          deletedAt: null,
         },
-        contents: {
-          select: {
-            title: true,
-            body: true,
+        include: {
+          author: {
+            select: {
+              name: true,
+              uuid: true,
+            },
           },
+          contents: {
+            select: {
+              title: true,
+              body: true,
+            },
+          },
+          files: { select: { url: true } },
         },
-        files: { select: { url: true } },
-      },
-    });
+      })
+      .catch((error) => {
+        if (error instanceof PrismaClientKnownRequestError) {
+          if (error.code === 'P2025') {
+            this.logger.debug(`Post with id ${id} not found`);
+            throw new NotFoundException(`Post with id ${id} not found`);
+          }
+          this.logger.error('getPost error');
+          this.logger.debug(error);
+          throw new InternalServerErrorException('Database Error');
+        }
+        this.logger.error('getPost error');
+        this.logger.debug(error);
+        throw new InternalServerErrorException('Unknown Error');
+      });
   }
 
   async createPost(
@@ -120,5 +135,37 @@ export class PostRepository {
         this.logger.debug(error);
         throw new InternalServerErrorException('Unknown Error');
       });
+  }
+
+  async deletePost(id: number, userUuid: string) {
+    this.logger.log('deletePost');
+    await this.prismaService.post
+      .update({
+        where: {
+          id,
+          authorId: userUuid,
+          deletedAt: null,
+        },
+        data: {
+          deletedAt: new Date(),
+        },
+      })
+      .catch((error) => {
+        if (error instanceof PrismaClientKnownRequestError) {
+          console.log(error);
+          if (error.code === 'P2025') {
+            this.logger.debug(`Post with id ${id} not found`);
+            throw new NotFoundException(`Post with id ${id} not found`);
+          }
+          this.logger.error('deletePost error');
+          this.logger.debug(error);
+          throw new InternalServerErrorException('Database Error');
+        }
+        this.logger.error('deletePost Unknown Error');
+        this.logger.debug(error);
+        throw new InternalServerErrorException('Unknown Error');
+      });
+
+    return { message: `post with id ${id} has been successfully deleted` };
   }
 }
