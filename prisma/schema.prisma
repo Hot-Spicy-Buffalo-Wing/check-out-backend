@@ -14,9 +14,11 @@ datasource db {
 }
 
 model User {
-  uuid      String   @id @db.Uuid
-  name      String
+  uuid      String   @id @db.Uuid @default(uuid())
+  name      String   @unique
   createdAt DateTime @default(now()) @map("created_at")
+  loginId   String   @unique
+  password  String
   post      Post[]
 
   @@map("user")
