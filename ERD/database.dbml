@@ -5,6 +5,8 @@ Table "user" {
 
   Indexes {
     uuid [pk, name: "user_pkey"]
+    loginId [unique, name: "user_loginId_key"]
+    name [unique, name: "user_name_key"]
   }
 }
 
