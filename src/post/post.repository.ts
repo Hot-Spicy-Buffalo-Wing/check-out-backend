@@ -54,6 +54,43 @@ export class PostRepository {
       });
   }
 
+  async getPostList(page: number, pageSize: number) {
+    this.logger.log('getPostList');
+
+    const skip = (page - 1) * pageSize;
+
+    return this.prismaService.post
+      .findMany({
+        skip: skip,
+        take: pageSize,
+        include: {
+          author: {
+            select: {
+              name: true,
+              uuid: true,
+            },
+          },
+          contents: {
+            select: {
+              title: true,
+              body: true,
+            },
+          },
+          files: { select: { url: true } },
+        },
+      })
+      .catch((error) => {
+        if (error instanceof PrismaClientKnownRequestError) {
+          this.logger.error('getPostList error');
+          this.logger.debug(error);
+          throw new InternalServerErrorException('Database Error');
+        }
+        this.logger.error('getPostList error');
+        this.logger.debug(error);
+        throw new InternalServerErrorException('Unknown Error');
+      });
+  }
+
   async createPost(
     { title, body, imageUrls }: CreatePostDto,
     userUuid: string,
@@ -96,11 +133,11 @@ export class PostRepository {
             this.logger.debug(`User uuid not found`);
             throw new NotFoundException(`User uuid not found`);
           }
-          this.logger.error('createNotice error');
+          this.logger.error('createPost error');
           this.logger.debug(error);
           throw new InternalServerErrorException('Database Error');
         }
-        this.logger.error('createNotice error');
+        this.logger.error('createPost error');
         this.logger.debug(error);
         throw new InternalServerErrorException('Unknown Error');
       });

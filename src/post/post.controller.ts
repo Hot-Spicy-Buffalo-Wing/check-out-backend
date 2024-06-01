@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { PostService } from './post.service';
@@ -26,6 +27,14 @@ export class PostController {
   @Get(':id')
   getPost(@Param('id', ParseIntPipe) id: number) {
     return this.postService.getPost(id);
+  }
+
+  @Get()
+  getPostList(
+    @Query('page') page: number = 1,
+    @Query('page-size') pageSize: number = 10,
+  ) {
+    return this.postService.getPostList(Number(page), Number(pageSize));
   }
 
   @Post()
