@@ -1,54 +1,42 @@
 Table "user" {
-  "uuid" UUID [not null]
-  "name" TEXT [not null]
-  "created_at" TIMESTAMP(3) [not null, default: `CURRENT_TIMESTAMP`]
+  "uuid" uuid [pk, not null]
+  "name" text [not null]
+  "created_at" timestamp(3) [not null, default: `CURRENT_TIMESTAMP`]
+  "loginId" text [not null]
+  "password" text [not null]
 
   Indexes {
-    uuid [pk, name: "user_pkey"]
     loginId [unique, name: "user_loginId_key"]
-    name [unique, name: "user_name_key"]
-  }
-}
-
-Table "file" {
-  "uuid" TEXT [not null]
-  "name" TEXT [not null]
-  "created_at" TIMESTAMP(3) [not null, default: `CURRENT_TIMESTAMP`]
-  "url" TEXT [not null]
-  "post_id" INTEGER [not null]
-
-  Indexes {
-    uuid [pk, name: "file_pkey"]
-  }
-}
-
-Table "content" {
-  "id" INTEGER [not null]
-  "title" TEXT
-  "body" TEXT [not null]
-  "created_at" TIMESTAMP(3) [not null, default: `CURRENT_TIMESTAMP`]
-  "post_id" INTEGER [pk, not null]
-
-  Indexes {
-    (id, post_id) [pk, name: "content_pkey"]
   }
 }
 
 Table "post" {
-  "id" SERIAL [not null, increment]
-  "views" INTEGER [not null, default: 0]
-  "created_at" TIMESTAMP(3) [not null, default: `CURRENT_TIMESTAMP`]
-  "updated_at" TIMESTAMP(3) [not null, default: `CURRENT_TIMESTAMP`]
-  "deleted_at" TIMESTAMP(3)
-  "author_id" UUID [not null]
-
-  Indexes {
-    id [pk, name: "post_pkey"]
-  }
+  "id" serial [pk, increment]
+  "views" integer [not null, default: 0]
+  "created_at" timestamp(3) [not null, default: `CURRENT_TIMESTAMP`]
+  "updated_at" timestamp(3) [not null, default: `CURRENT_TIMESTAMP`]
+  "deleted_at" timestamp(3)
+  "author_id" uuid [not null]
 }
 
-Ref "file_post_id_fkey":"post"."id" < "file"."post_id" [update: cascade, delete: restrict]
+Table "file" {
+  "uuid" text [pk, not null]
+  "name" text [not null]
+  "created_at" timestamp(3) [not null, default: `CURRENT_TIMESTAMP`]
+  "url" text [not null]
+  "post_id" integer [not null]
+  "order" integer [not null, default: 0]
+}
 
-Ref "content_post_id_fkey":"post"."id" < "content"."post_id" [update: cascade, delete: restrict]
+Table "content" {
+  "title" text
+  "body" text [not null]
+  "created_at" timestamp(3) [not null, default: `CURRENT_TIMESTAMP`]
+  "post_id" integer [pk, not null]
+}
 
-Ref "post_author_id_fkey":"user"."uuid" < "post"."author_id" [update: cascade, delete: restrict]
+Ref:"user"."uuid" < "post"."author_id" [update: cascade, delete: restrict]
+
+Ref:"post"."id" < "file"."post_id" [update: cascade, delete: restrict]
+
+Ref:"post"."id" < "content"."post_id" [update: cascade, delete: restrict]
