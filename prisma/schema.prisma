@@ -38,7 +38,7 @@ model File {
 }
 
 model Content {
-  title     String?
+  title     String
   body      String
   createdAt DateTime @default(now()) @map("created_at")
 
