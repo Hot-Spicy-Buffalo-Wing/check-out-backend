@@ -19,7 +19,11 @@ export class PostService {
   async getPostList(page: number, pageSize: number) {
     const rawPostList = await this.postRepository.getPostList(page, pageSize);
 
-    return rawPostList.map((rawPost) => this.postMapper.processPost(rawPost));
+    const processPostList = rawPostList.map((rawPost) =>
+      this.postMapper.processPost(rawPost),
+    );
+
+    return { total: pageSize, list: processPostList };
   }
 
   async createPost(createPostDto: CreatePostDto, userUuid: string) {

@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class UpdatePostDto {
   @ApiProperty({
-    example: '제목',
+    example: 'This is title',
     description: '게시글 제목',
     required: true,
   })
@@ -12,7 +12,7 @@ export class UpdatePostDto {
   title: string;
 
   @ApiProperty({
-    example: '게시글 내용',
+    example: 'This is body',
     description: '게시글 내용',
     required: true,
   })

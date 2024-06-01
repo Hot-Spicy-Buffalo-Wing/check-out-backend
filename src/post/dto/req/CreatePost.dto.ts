@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class CreatePostDto {
   @ApiProperty({
-    example: '제목',
+    example: 'This is title',
     description: '게시글 제목',
     required: true,
   })
@@ -12,7 +12,7 @@ export class CreatePostDto {
   title: string;
 
   @ApiProperty({
-    example: '게시글 내용',
+    example: 'This is body',
     description: '게시글 내용',
     required: true,
   })
@@ -22,12 +22,11 @@ export class CreatePostDto {
   body: string;
 
   @ApiProperty({
-    example: 'image.png',
-    description: '이미지 파일 이름',
+    example: ['image_url1,', 'image_url2', 'image_url3'],
+    description: '이미지 url list',
     required: true,
   })
   @IsString({ each: true })
-  @IsString()
   @IsNotEmpty()
   imageUrls: string[] = [];
 }
