@@ -10,6 +10,8 @@ import { RegisterResDto } from './dto/res/RegisterRes.dto';
 import { RegisterDto } from './dto/req/Register.dto';
 import { LoginDto } from './dto/req/Login.dto';
 import { LoginResDto } from './dto/res/LoginRes.dto';
+import { RefreshTokenResDto } from './dto/res/RefreshTokenRes.dto';
+import { RefreshTokenDto } from './dto/req/RefreshToken.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -40,5 +42,18 @@ export class AuthController {
   @Post('login')
   login(@Body() { loginId, password }: LoginDto) {
     return this.authService.login(loginId, password);
+  }
+
+  @ApiOperation({
+    summary: 'refresh',
+    description: 'Refresh accessToken',
+  })
+  @ApiOkResponse({
+    type: RefreshTokenResDto,
+  })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
+  @Post('refresh')
+  refreshToken(@Body() { refreshToken }: RefreshTokenDto) {
+    return this.authService.refreshToken(refreshToken);
   }
 }

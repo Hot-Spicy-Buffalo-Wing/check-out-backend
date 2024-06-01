@@ -1,4 +1,6 @@
 import {
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -9,13 +11,15 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthRepository {
   private readonly logger = new Logger(AuthRepository.name);
   constructor(
     private readonly prismaService: PrismaService,
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async register(name: string, registerId: string, password: string) {
@@ -71,7 +75,34 @@ export class AuthRepository {
     }
 
     return {
-      accessToken: this.jwtService.sign({ userUuid: user.uuid }),
+      accessToken: this.jwtService.sign(
+        { userUuid: user.uuid },
+        { expiresIn: this.configService.get<string>('JWT_EXPIRESIN') },
+      ),
+
+      refreshToken: this.jwtService.sign(
+        { userUuid: user.uuid },
+        { expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRESIN') },
+      ),
     };
+  }
+
+  refreshToken(refreshToken: string) {
+    try {
+      this.jwtService.verify(refreshToken);
+      const extractedData = this.jwtService.decode(refreshToken);
+
+      const newAccessToken = this.jwtService.sign(
+        { userUuid: extractedData.userUuid },
+        { expiresIn: this.configService.get<string>('JWT_EXPIRESIN') },
+      );
+
+      return {
+        accessToken: newAccessToken,
+      };
+    } catch (error) {
+      this.logger.error(error);
+      throw new HttpException('invalid refreshToken', HttpStatus.UNAUTHORIZED);
+    }
   }
 }

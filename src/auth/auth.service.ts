@@ -16,4 +16,8 @@ export class AuthService {
   async login(loginId: string, password: string) {
     return this.authRepository.login(loginId, password);
   }
+
+  async refreshToken(refreshToken: string) {
+    return this.authRepository.refreshToken(refreshToken);
+  }
 }
