@@ -7,6 +7,7 @@ Table "user" {
 
   Indexes {
     loginId [unique, name: "user_loginId_key"]
+    name [unique, name: "user_name_key"]
   }
 }
 
@@ -29,10 +30,19 @@ Table "file" {
 }
 
 Table "content" {
-  "title" text
+  "title" text [not null]
   "body" text [not null]
   "created_at" timestamp(3) [not null, default: `CURRENT_TIMESTAMP`]
   "post_id" integer [pk, not null]
+}
+
+Table "lookbook" {
+  "id" serial [pk, increment]
+  "created_at" timestamp(3) [not null, default: `CURRENT_TIMESTAMP`]
+  "deleted_at" timestamp(3)
+  "author_id" uuid [not null]
+  "prompt" text [not null]
+  "imageUrl" text [not null]
 }
 
 Ref:"user"."uuid" < "post"."author_id" [update: cascade, delete: restrict]
@@ -40,3 +50,5 @@ Ref:"user"."uuid" < "post"."author_id" [update: cascade, delete: restrict]
 Ref:"post"."id" < "file"."post_id" [update: cascade, delete: restrict]
 
 Ref:"post"."id" < "content"."post_id" [update: cascade, delete: restrict]
+
+Ref:"user"."uuid" < "lookbook"."author_id" [update: cascade, delete: restrict]
