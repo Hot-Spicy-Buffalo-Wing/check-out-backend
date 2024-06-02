@@ -56,6 +56,7 @@ export class AiService {
       if (response.data) {
         return this.fileService.uploadFile(response.data.url);
       }
+      // return this.fileService.uploadFile('https://via.placeholder.com/150');
     } catch (error) {
       this.logger.error(error);
     }
