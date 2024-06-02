@@ -107,7 +107,7 @@ export class PostController {
 
   @ApiOperation({
     summary: 'Delete post',
-    description: 'Update post',
+    description: 'Delete post',
   })
   @ApiOkResponse({
     type: deletePostResDto,
