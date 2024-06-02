@@ -54,8 +54,6 @@ export class PostService {
       throw new ForbiddenException();
     }
 
-    //fileService를 이용해 실제 file 지우기
-
     return this.postRepository.deletePost(id, userUuid);
   }
 }
