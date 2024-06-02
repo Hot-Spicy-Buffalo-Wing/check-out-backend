@@ -7,7 +7,8 @@ export class AuthService {
   constructor(private authRepository: AuthRepository) {}
 
   async register(name: string, registerId: string, password: string) {
-    const saltOrRounds = 100;
+    const saltOrRounds = 10;
+
     const hash = await bcrypt.hash(password, saltOrRounds);
 
     return this.authRepository.register(name, registerId, hash);
