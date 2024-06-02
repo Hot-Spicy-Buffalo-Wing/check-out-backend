@@ -14,12 +14,13 @@ datasource db {
 }
 
 model User {
-  uuid      String   @id @db.Uuid @default(uuid())
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  loginId   String   @unique
+  uuid      String     @id @default(uuid()) @db.Uuid
+  name      String     @unique
+  createdAt DateTime   @default(now()) @map("created_at")
+  loginId   String     @unique
   password  String
   post      Post[]
+  LookBook  LookBook[]
 
   @@map("user")
 }
@@ -63,4 +64,17 @@ model Post {
   files    File[]
 
   @@map("post")
+}
+
+model LookBook {
+  id Int @id @default(autoincrement())
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+  authorId  String    @map("author_id") @db.Uuid
+  prompt String
+  imageUrl String
+  author    User      @relation(fields: [authorId], references: [uuid])
+
+  @@map("lookbook")
 }
