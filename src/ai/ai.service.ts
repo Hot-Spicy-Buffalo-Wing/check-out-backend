@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import {
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -9,6 +10,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { catchError, firstValueFrom } from 'rxjs';
 import { FileService } from 'src/file/file.service';
+import { AiRepository } from './ai.repository';
 
 @Injectable()
 export class AiService {
@@ -17,9 +19,18 @@ export class AiService {
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
     private readonly fileService: FileService,
+    private readonly aiRepository: AiRepository,
   ) {}
 
-  async generateLookBook(
+  async getLookBookById(id: number) {
+    return await this.aiRepository.getLookBookById(id);
+  }
+
+  async getLookBookByUserUuid(userUuid: string) {
+    return await this.aiRepository.getLookBookByUserUuid(userUuid);
+  }
+
+  async createLookBook(
     gender: string,
     ageRange: string,
     {
@@ -28,8 +39,9 @@ export class AiService {
       district,
     }: { province: string; city: string; district: string },
     TPO: [string],
+    userUuid: string,
   ) {
-    this.logger.log('generateLookBook called');
+    this.logger.log('createLookBook called');
 
     try {
       const response = await firstValueFrom(
@@ -56,11 +68,27 @@ export class AiService {
       if (response.data) {
         const s3Url = await this.fileService.uploadFile(response.data.url);
 
-        return { prompt: response.data.prompt, url: s3Url };
+        await this.aiRepository.createLookBook(
+          response.data.prompt,
+          s3Url,
+          userUuid,
+        );
+
+        return { prompt: response.data.prompt, imageUrl: s3Url };
       }
     } catch (error) {
       this.logger.error(error);
       throw new HttpException('Error occur', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  async deleteLookBook(id: number, userUuid: string) {
+    const lookBook = await this.aiRepository.getLookBookById(id);
+
+    if (lookBook.authorId !== userUuid) {
+      throw new ForbiddenException();
+    }
+
+    return this.aiRepository.deleteLookBook(id, userUuid);
   }
 }
