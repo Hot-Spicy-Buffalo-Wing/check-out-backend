@@ -1,5 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import {
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -32,18 +34,16 @@ export class AiService {
     try {
       const response = await firstValueFrom(
         this.httpService
-          .post(
-            this.configService.get<string>('AI_URL')!,
-            {
-              area: {
-                province,
-                city,
-                district,
-              },
-              TPO,
+          .post(this.configService.get<string>('AI_URL')!, {
+            gender,
+            ageRange,
+            area: {
+              province,
+              city,
+              district,
             },
-            { params: { gender, ageRange } },
-          )
+            TPO,
+          })
           .pipe(
             catchError((err) => {
               this.logger.error(err);
@@ -54,11 +54,13 @@ export class AiService {
       );
 
       if (response.data) {
-        return this.fileService.uploadFile(response.data.url);
+        const s3Url = await this.fileService.uploadFile(response.data.url);
+
+        return { prompt: response.data.prompt, url: s3Url };
       }
-      // return this.fileService.uploadFile('https://via.placeholder.com/150');
     } catch (error) {
       this.logger.error(error);
+      throw new HttpException('Error occur', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
