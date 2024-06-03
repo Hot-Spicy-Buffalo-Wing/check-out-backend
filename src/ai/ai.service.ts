@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { catchError, firstValueFrom } from 'rxjs';
 import { FileService } from 'src/file/file.service';
 import { AiRepository } from './ai.repository';
+import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()
 export class AiService {
@@ -20,6 +21,7 @@ export class AiService {
     private readonly httpService: HttpService,
     private readonly fileService: FileService,
     private readonly aiRepository: AiRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   async getLookBookById(id: number) {
@@ -31,8 +33,6 @@ export class AiService {
   }
 
   async createLookBook(
-    gender: string,
-    ageRange: string,
     {
       province,
       city,
@@ -41,14 +41,21 @@ export class AiService {
     TPO: [string],
     userUuid: string,
   ) {
-    this.logger.log('createLookBook called');
+    const userInfo = await this.userRepository.getUserInfo(userUuid);
+
+    if (!userInfo.gender || !userInfo.ageRange) {
+      throw new HttpException(
+        'UserInfo does not exist. Update User info first',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     try {
       const response = await firstValueFrom(
         this.httpService
           .post(this.configService.get<string>('AI_URL')!, {
-            gender,
-            ageRange,
+            gender: userInfo.gender,
+            ageRange: userInfo.ageRange,
             area: {
               province,
               city,
