@@ -75,9 +75,9 @@ export class AiController {
   @UseGuards(JwtAuthGuard)
   generateLookBook(
     @GetUser() userUuid: string,
-    @Body() { gender, ageRange, area, TPO }: AiReqBodyDto,
+    @Body() { area, TPO }: AiReqBodyDto,
   ) {
-    return this.aiService.createLookBook(gender, ageRange, area, TPO, userUuid);
+    return this.aiService.createLookBook(area, TPO, userUuid);
   }
 
   @ApiOperation({
