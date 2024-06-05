@@ -13,6 +13,21 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
 
+  const whitelist = [/https:\/\/.*check-out.paperst.ar/];
+  app.enableCors({
+    origin: function (origin, callback) {
+      if (!origin || whitelist.some((regex) => regex.test(origin))) {
+        callback(null, origin);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    credentials: true,
+  });
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
