@@ -13,7 +13,10 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
 
-  const whitelist = [/https:\/\/.*check-out.paperst.ar/];
+  const whitelist = [
+    /https:\/\/check-out.paperst.ar/,
+    /https:\/\/.*check-out.paperst.ar/,
+  ];
   app.enableCors({
     origin: function (origin, callback) {
       if (!origin || whitelist.some((regex) => regex.test(origin))) {
