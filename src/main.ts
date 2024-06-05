@@ -16,6 +16,7 @@ async function bootstrap() {
   const whitelist = [
     /https:\/\/check-out.paperst.ar/,
     /https:\/\/.*check-out.paperst.ar/,
+    /http:\/\/localhost(:\d+)?/,
   ];
   app.enableCors({
     origin: function (origin, callback) {
