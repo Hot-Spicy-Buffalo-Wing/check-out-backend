@@ -42,13 +42,15 @@ export class FileService {
         throw new InternalServerErrorException();
       });
 
-    const s3Url = this.minioService.client.presignedUrl(
+    return imageUuid;
+  }
+
+  async getSignedUrl(imageUuid: string) {
+    return this.minioService.client.presignedUrl(
       'GET',
       this.configService.getOrThrow<string>('AWS_S3_BUCKET_NAME'),
       imageUuid,
       24 * 60 * 60,
     );
-
-    return s3Url;
   }
 }

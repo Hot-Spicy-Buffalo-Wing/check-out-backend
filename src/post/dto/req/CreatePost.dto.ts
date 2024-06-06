@@ -22,11 +22,11 @@ export class CreatePostDto {
   body: string;
 
   @ApiProperty({
-    example: ['image_url1,', 'image_url2', 'image_url3'],
-    description: '이미지 url list',
+    example: ['image_uuid1,', 'image_uuid2', 'image_uuid3'],
+    description: '이미지 uuid list',
     required: true,
   })
   @IsString({ each: true })
   @IsNotEmpty()
-  imageUrls: string[] = [];
+  imageUuid: string[] = [];
 }

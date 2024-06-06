@@ -19,7 +19,7 @@ export class PostMapper {
       updatedAt,
       author,
       contents: contents[0],
-      imageUrls: files.map(({ url }: any) => `${url}`),
+      imageUuid: files.map(({ uuid }: any) => `${uuid}`),
     };
   }
 }

@@ -25,11 +25,24 @@ export class AiService {
   ) {}
 
   async getLookBookById(id: number) {
-    return await this.aiRepository.getLookBookById(id);
+    const { imageUuid, ...result } =
+      await this.aiRepository.getLookBookById(id);
+
+    return {
+      ...result,
+      imageUrl: await this.fileService.getSignedUrl(imageUuid),
+    };
   }
 
   async getLookBookByUserUuid(userUuid: string) {
-    return await this.aiRepository.getLookBookByUserUuid(userUuid);
+    const results = await this.aiRepository.getLookBookByUserUuid(userUuid);
+
+    return await Promise.all(
+      results.list.map(async ({ imageUuid, ...result }) => ({
+        ...result,
+        imageUrl: await this.fileService.getSignedUrl(imageUuid),
+      })),
+    );
   }
 
   async createLookBook(
@@ -73,13 +86,15 @@ export class AiService {
       );
 
       if (response.data) {
-        const s3Url = await this.fileService.uploadFile(response.data.url);
+        const imageUuid = await this.fileService.uploadFile(response.data.url);
 
         await this.aiRepository.createLookBook(
           response.data.prompt,
-          s3Url,
+          imageUuid,
           userUuid,
         );
+
+        const s3Url = await this.fileService.getSignedUrl(imageUuid);
 
         return { prompt: response.data.prompt, imageUrl: s3Url };
       }

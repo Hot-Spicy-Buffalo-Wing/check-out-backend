@@ -35,7 +35,7 @@ export class PostRepository {
               body: true,
             },
           },
-          files: { select: { url: true } },
+          files: { select: { imageUuid: true } },
         },
       })
       .catch((error) => {
@@ -76,7 +76,7 @@ export class PostRepository {
               body: true,
             },
           },
-          files: { select: { url: true } },
+          files: { select: { imageUuid: true } },
         },
       })
       .catch((error) => {
@@ -92,7 +92,7 @@ export class PostRepository {
   }
 
   async createPost(
-    { title, body, imageUrls }: CreatePostDto,
+    { title, body, imageUuid }: CreatePostDto,
     userUuid: string,
   ) {
     this.logger.log('createPost');
@@ -113,10 +113,10 @@ export class PostRepository {
           createdAt: new Date(),
           files: {
             create: [
-              ...imageUrls.map((imageUrl, idx) => ({
+              ...imageUuid.map((uuid, idx) => ({
                 order: idx,
                 name: title,
-                url: imageUrl,
+                imageUuid: uuid,
               })),
             ],
           },
@@ -124,7 +124,7 @@ export class PostRepository {
         include: {
           author: { select: { name: true, uuid: true } },
           contents: { select: { title: true, body: true } },
-          files: { select: { url: true } },
+          files: { select: { imageUuid: true } },
         },
       })
       .catch((error) => {

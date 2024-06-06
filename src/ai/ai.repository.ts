@@ -25,7 +25,7 @@ export class AiRepository {
           createdAt: true,
           authorId: true,
           prompt: true,
-          imageUrl: true,
+          imageUuid: true,
         },
       })
       .catch((error) => {
@@ -57,7 +57,7 @@ export class AiRepository {
           createdAt: true,
           authorId: true,
           prompt: true,
-          imageUrl: true,
+          imageUuid: true,
         },
       })
       .catch((error) => {
@@ -74,7 +74,7 @@ export class AiRepository {
     return { total: result.length, list: result };
   }
 
-  async createLookBook(prompt: string, imageUrl: string, userUuid: string) {
+  async createLookBook(prompt: string, imageUuid: string, userUuid: string) {
     this.logger.log('createLookBook');
     return this.prismaService.lookBook
       .create({
@@ -86,7 +86,7 @@ export class AiRepository {
           },
           createdAt: new Date(),
           prompt,
-          imageUrl,
+          imageUuid,
         },
       })
       .catch((error) => {

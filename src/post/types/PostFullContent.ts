@@ -20,7 +20,7 @@ export type PostFullContent = Prisma.PostGetPayload<{
     };
     files: {
       select: {
-        url: true;
+        imageUuid: true;
       };
     };
   };

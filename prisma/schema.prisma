@@ -33,7 +33,7 @@ model File {
   order     Int      @default(0)
   name      String
   createdAt DateTime @default(now()) @map("created_at")
-  url       String
+  imageUuid String   @map("image_uuid")
 
   postId Int  @map("post_id")
   post   Post @relation(fields: [postId], references: [id])
@@ -76,7 +76,7 @@ model LookBook {
   deletedAt DateTime? @map("deleted_at")
   authorId  String    @map("author_id") @db.Uuid
   prompt String
-  imageUrl String
+  imageUuid String    @map("image_uuid")
   author    User      @relation(fields: [authorId], references: [uuid])
 
   @@map("lookbook")
