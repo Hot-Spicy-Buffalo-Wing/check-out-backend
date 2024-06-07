@@ -2,11 +2,13 @@ Table "user" {
   "uuid" uuid [pk, not null]
   "name" text [not null]
   "created_at" timestamp(3) [not null, default: `CURRENT_TIMESTAMP`]
-  "loginId" text [not null]
+  "login_id" text [not null]
   "password" text [not null]
+  "gender" text
+  "age_range" text
 
   Indexes {
-    loginId [unique, name: "user_loginId_key"]
+    login_id [unique, name: "user_loginId_key"]
     name [unique, name: "user_name_key"]
   }
 }
