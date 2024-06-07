@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  ArrayNotEmpty,
+} from 'class-validator';
 
 export class CreatePostDto {
   @ApiProperty({
@@ -28,5 +33,6 @@ export class CreatePostDto {
   })
   @IsString({ each: true })
   @IsNotEmpty()
+  @ArrayNotEmpty()
   imageUrls: string[] = [];
 }
