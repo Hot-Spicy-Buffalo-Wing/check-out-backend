@@ -6,5 +6,7 @@
 
 */
 -- AlterTable
-ALTER TABLE "file" DROP COLUMN "url",
-ADD COLUMN     "image_uuid" TEXT NOT NULL;
+-- ALTER TABLE "file" DROP COLUMN "url",
+-- ADD COLUMN     "image_uuid" TEXT NOT NULL;
+
+ALTER TABLE "file" RENAME COLUMN "url" TO "image_uuid";

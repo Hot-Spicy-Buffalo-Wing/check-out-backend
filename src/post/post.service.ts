@@ -50,7 +50,7 @@ export class PostService {
       createPostDto,
       userUuid,
       createPostDto.imageUrls.map((url) =>
-        new URL(url).pathname.split('/').slice(1).join('/'),
+        new URL(url).pathname.split('/').slice(2).join('/'),
       ),
     );
 

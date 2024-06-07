@@ -6,5 +6,8 @@
 
 */
 -- AlterTable
-ALTER TABLE "lookbook" DROP COLUMN "imageUrl",
-ADD COLUMN     "image_uuid" TEXT NOT NULL;
+-- ALTER TABLE "lookbook" DROP COLUMN "imageUrl",
+-- ADD COLUMN     "image_uuid" TEXT NOT NULL;
+
+ALTER TABLE "lookbook" RENAME COLUMN "imageUrl" TO "image_uuid";
+
