@@ -42,7 +42,7 @@ export class PostService {
         })),
     );
 
-    return { total: pageSize, list: processPostList };
+    return { total: processPostList.length, list: processPostList };
   }
 
   async createPost(createPostDto: CreatePostDto, userUuid: string) {
