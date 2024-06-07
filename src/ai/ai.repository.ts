@@ -59,6 +59,9 @@ export class AiRepository {
           prompt: true,
           imageUuid: true,
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
       })
       .catch((error) => {
         if (error instanceof PrismaClientKnownRequestError) {
