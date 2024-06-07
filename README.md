@@ -1,73 +1,139 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Check-out-backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Backend Tech stack
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+1. **NestJS**
+2. **Prisma**
+3. **PostgreSQL**
 
-## Description
+### Directory Description (src dir)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+📂 ai
 
-## Installation
+- API for LookBook
 
-```bash
-$ npm install
-```
+📂 auth
 
-## Running the app
+- API for sign-up and sign-in (JWT)
 
-```bash
-# development
-$ npm run start
+📂 file
 
-# watch mode
-$ npm run start:dev
+- API for file upload using minIO
 
-# production mode
-$ npm run start:prod
-```
+📂 post
 
-## Test
+- API for posts (CRUD)
+
+📂 prisma
+
+- to use prisma
+
+📂 user
+
+- API for user info (etc..)
+
+### Directory Tree
 
 ```bash
-# unit tests
-$ npm run test
+┣ 📂 .github/workflows
+┃ ┗ 📜 staging.yaml // confing github action
+┣ 📂 ERD
+┃ ┗ 📜 database.dbml // Database structure
+┃ ┣ 📂 prisma
+┃ ┣ 📂 migrations // migration files
+┃ ┃ ┣ 📜 20240521051320_init
+┃ ┃ ┣ 📜 20240530154723_fix_content_column
+┃ ┃ ┣ 📜 ...
+┃ ┃ ┗ 📜 migration_lock.toml
+┃ ┗ 📜 schema.prisma // prisma schema file
+┣ 📂 src
+┃ ┣ 📂 ai // api about generating lookbook
+┃ ┃ ┣ 📂 dto
+┃ ┃ ┃ ┣ 📂 req
+┃ ┃ ┃ ┃ ┗ 📜 AiReqBody.dto.ts
+┃ ┃ ┃ ┗ 📂 res
+┃ ┃ ┃ ┃ ┣ 📜 CreateLookBook.dto.ts
+┃ ┃ ┃ ┃ ┣ 📜 DeleteLookBook.dto.ts
+┃ ┃ ┃ ┃ ┣ 📜 GetLookBookById.dto.ts
+┃ ┃ ┃ ┃ ┗ 📜 GetLookBookByUserUuid.dto.ts
+┃ ┃ ┣ 📜 ai.controller.ts
+┃ ┃ ┣ 📜 ai.module.ts
+┃ ┃ ┣ 📜 ai.repository.ts
+┃ ┃ ┗ 📜 ai.service.ts
+┃ ┣ 📂 auth // api about sign-up and sign-in
+┃ ┃ ┣ 📂 dto
+┃ ┃ ┃ ┣ 📂 req
+┃ ┃ ┃ ┃ ┣ 📜 Login.dto.ts
+┃ ┃ ┃ ┃ ┣ 📜 RefreshToken.dto.ts
+┃ ┃ ┃ ┃ ┗ 📜 Register.dto.ts
+┃ ┃ ┃ ┗ 📂 res
+┃ ┃ ┃ ┃ ┣ 📜 LoginRes.dto.ts
+┃ ┃ ┃ ┃ ┣ 📜 RefreshTokenRes.dto.ts
+┃ ┃ ┃ ┃ ┗ 📜 RegisterRes.dto.ts
+┃ ┃ ┣ 📂 guard
+┃ ┃ ┃ ┣ 📜 jwt-auth.guard.ts
+┃ ┃ ┃ ┗ 📜 jwt.strategy.ts
+┃ ┃ ┣ 📜 auth.controller.ts
+┃ ┃ ┣ 📜 auth.module.ts
+┃ ┃ ┣ 📜 auth.repository.ts
+┃ ┃ ┗ 📜 auth.service.ts
+┃ ┣ 📂 file // api about upload image file
+┃ ┃ ┣ 📜 file.module.ts
+┃ ┃ ┗ 📜 file.service.ts
+┃ ┣ 📂 post // api about posts
+┃ ┃ ┣ 📂 dto
+┃ ┃ ┃ ┣ 📂 req
+┃ ┃ ┃ ┃ ┣ 📜 CreatePost.dto.ts
+┃ ┃ ┃ ┃ ┣ 📜 GetPostListQuery.dto.ts
+┃ ┃ ┃ ┃ ┗ 📜 UpdatePost.dto.ts
+┃ ┃ ┃ ┗ 📂 res
+┃ ┃ ┃ ┃ ┣ 📜 deletePostRes.dto.ts
+┃ ┃ ┃ ┃ ┗ 📜 postRes.dto.ts
+┃ ┃ ┣ 📂 types
+┃ ┃ ┃ ┗ 📜 PostFullContent.ts
+┃ ┃ ┣ 📜 post.controller.ts
+┃ ┃ ┣ 📜 post.mapper.ts
+┃ ┃ ┣ 📜 post.module.ts
+┃ ┃ ┣ 📜 post.repository.ts
+┃ ┃ ┗ 📜 post.service.ts
+┃ ┣ 📂 prisma // to use prisma service
+┃ ┃ ┣ 📜 prisma.module.ts
+┃ ┃ ┗ 📜 prisma.service.ts
+┃ ┣ 📂 user // api about user
+┃ ┃ ┣ 📂 decorator
+┃ ┃ ┃ ┗ 📜 get-user.decorator.ts
+┃ ┃ ┣ 📂 dto
+┃ ┃ ┃ ┣ 📂 req
+┃ ┃ ┃ ┃ ┗ 📜 UpdateUserInfo.dto.ts
+┃ ┃ ┃ ┗ 📂 res
+┃ ┃ ┃ ┃ ┗ 📜 GetUserInfo.dto.ts
+┃ ┃ ┣ 📜 user.controller.ts
+┃ ┃ ┣ 📜 user.module.ts
+┃ ┃ ┣ 📜 user.repository.ts
+┃ ┃ ┗ 📜 user.service.ts
+┃ ┣ 📜 app.controller.spec.ts
+┃ ┣ 📜 app.controller.ts
+┃ ┣ 📜 app.module.ts
+┃ ┣ 📜 app.service.ts
+┃ ┗ 📜 main.ts
+┣ 📂 test
+┣ 📜 .eslintrc.js
+┣ 📜 .gitignore
+┣ 📜 .prettierrc
+┣ 📜 Dockerfile
+┣ 📜 README.md
+┣ 📜 nest-cli.json
+┣ 📜 package-lock.json
+┣ 📜 package.json
+┣ 📜 tsconfig.build.json
+┗ 📜 tsconfig.json
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
-## Support
+## Database
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+You can see dbdocs in [here](https://dbdocs.io/GanghyeonSeo/check-out-backend?view=relationships).
 
-## Stay in touch
+### Database Relation Diagram
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+![Relation Diagram](./ERD/Relation%20Diagram.png)
