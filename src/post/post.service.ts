@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreatePostDto } from './dto/req/CreatePost.dto';
 import { PostRepository } from './post.repository';
 import { PostMapper } from './post.mapper';
@@ -46,15 +51,22 @@ export class PostService {
   }
 
   async createPost(createPostDto: CreatePostDto, userUuid: string) {
-    const rawPost = await this.postRepository.createPost(
-      createPostDto,
-      userUuid,
-      createPostDto.imageUrls.map((url) =>
-        new URL(url).pathname.split('/').slice(2).join('/'),
-      ),
-    );
+    try {
+      const rawPost = await this.postRepository.createPost(
+        createPostDto,
+        userUuid,
+        createPostDto.imageUrls.map((url) =>
+          new URL(url).pathname.split('/').slice(2).join('/'),
+        ),
+      );
 
-    return this.getPost(rawPost.id);
+      return this.getPost(rawPost.id);
+    } catch (error) {
+      console.error(error);
+      if (error.code === 'ERR_INVALID_URL') {
+        throw new HttpException('invalid image url', HttpStatus.BAD_REQUEST);
+      }
+    }
   }
 
   async updatePost(updatePostDto: UpdatePostDto, id: number, userUuid: string) {
