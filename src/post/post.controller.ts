@@ -61,7 +61,7 @@ export class PostController {
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   @Get(':id')
   getPost(@Param('id', ParseIntPipe) id: number): Promise<PostDto> {
-    return this.postService.getPost(id);
+    return this.postService.getPost(id, true);
   }
 
   @ApiOperation({

@@ -14,7 +14,7 @@ export class PostRepository {
   private readonly logger = new Logger(PostRepository.name);
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getPost(id: number) {
+  async getPost(id: number, withView: boolean) {
     this.logger.log('getPost');
     return this.prismaService.post
       .update({
@@ -24,7 +24,7 @@ export class PostRepository {
         },
         data: {
           views: {
-            increment: 1,
+            increment: withView ? 1 : 0,
           },
         },
         include: {

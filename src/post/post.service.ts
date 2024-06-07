@@ -18,8 +18,8 @@ export class PostService {
     private readonly fileService: FileService,
   ) {}
 
-  async getPost(id: number) {
-    const rawPost = await this.postRepository.getPost(id);
+  async getPost(id: number, withView: boolean = false) {
+    const rawPost = await this.postRepository.getPost(id, withView);
     const { imageUuids, ...post } = this.postMapper.processPost(rawPost);
     return {
       ...post,
@@ -60,7 +60,7 @@ export class PostService {
         ),
       );
 
-      return this.getPost(rawPost.id);
+      return this.getPost(rawPost.id, false);
     } catch (error) {
       console.error(error);
       if (error.code === 'ERR_INVALID_URL') {
@@ -70,7 +70,7 @@ export class PostService {
   }
 
   async updatePost(updatePostDto: UpdatePostDto, id: number, userUuid: string) {
-    const post = await this.postRepository.getPost(id);
+    const post = await this.postRepository.getPost(id, false);
 
     if (post.author.uuid !== userUuid) {
       throw new ForbiddenException();
@@ -82,7 +82,7 @@ export class PostService {
   }
 
   async deletePost(id: number, userUuid: string) {
-    const post = await this.postRepository.getPost(id);
+    const post = await this.postRepository.getPost(id, false);
 
     if (post.author.uuid !== userUuid) {
       throw new ForbiddenException();
