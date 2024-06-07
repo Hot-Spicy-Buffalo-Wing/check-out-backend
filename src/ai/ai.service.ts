@@ -35,14 +35,18 @@ export class AiService {
   }
 
   async getLookBookByUserUuid(userUuid: string) {
-    const results = await this.aiRepository.getLookBookByUserUuid(userUuid);
+    const { list, ...results } =
+      await this.aiRepository.getLookBookByUserUuid(userUuid);
 
-    return await Promise.all(
-      results.list.map(async ({ imageUuid, ...result }) => ({
-        ...result,
-        imageUrl: await this.fileService.getSignedUrl(imageUuid),
-      })),
-    );
+    return {
+      ...results,
+      list: await Promise.all(
+        list.map(async ({ imageUuid, ...result }) => ({
+          ...result,
+          imageUrl: await this.fileService.getSignedUrl(imageUuid),
+        })),
+      ),
+    };
   }
 
   async createLookBook(
