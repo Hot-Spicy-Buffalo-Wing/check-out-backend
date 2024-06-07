@@ -83,6 +83,9 @@ export class PostRepository {
           },
           files: { select: { imageUuid: true } },
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
       })
       .catch((error) => {
         if (error instanceof PrismaClientKnownRequestError) {
