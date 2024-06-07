@@ -24,7 +24,7 @@ export class AuthRepository {
 
   async register(name: string, registerId: string, password: string) {
     this.logger.log('register');
-    this.prismaService.user
+    await this.prismaService.user
       .create({
         data: {
           name,
@@ -36,6 +36,13 @@ export class AuthRepository {
         if (error instanceof PrismaClientKnownRequestError) {
           this.logger.error('register error');
           this.logger.debug(error);
+          if (error.code === 'P2002') {
+            throw new HttpException(
+              `user with name '${name}' already exists`,
+              HttpStatus.CONFLICT,
+            );
+          }
+
           throw new InternalServerErrorException('Database Error');
         }
         this.logger.error('createNotice error');
