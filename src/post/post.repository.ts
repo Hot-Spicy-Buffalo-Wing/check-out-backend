@@ -92,8 +92,9 @@ export class PostRepository {
   }
 
   async createPost(
-    { title, body, imageUuid }: CreatePostDto,
+    { title, body }: CreatePostDto,
     userUuid: string,
+    imageUuids: string[],
   ) {
     this.logger.log('createPost');
     return this.prismaService.post
@@ -113,7 +114,7 @@ export class PostRepository {
           createdAt: new Date(),
           files: {
             create: [
-              ...imageUuid.map((uuid, idx) => ({
+              ...imageUuids.map((uuid, idx) => ({
                 order: idx,
                 name: title,
                 imageUuid: uuid,

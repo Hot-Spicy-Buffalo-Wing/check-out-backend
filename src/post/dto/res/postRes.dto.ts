@@ -22,9 +22,9 @@ export class PostDto {
   contents: { title: string; body: string };
 
   @ApiProperty({
-    example: ['image_uuid1,', 'image_uuid2', 'image_uuid3'],
+    example: ['image_url1,', 'image_url2', 'image_url3'],
   })
-  imageUuid: string[];
+  imageUrls: string[];
 }
 
 export class PostListDto {
@@ -48,7 +48,7 @@ export class PostListDto {
           title: 'This is title',
           body: 'This is body',
         },
-        imageUuid: ['image_uuid1,', 'image_uuid2', 'image_uuid3'],
+        imageUrls: ['image_url1,', 'image_url2', 'image_url3'],
       },
       {
         id: 1,
@@ -63,7 +63,7 @@ export class PostListDto {
           title: 'This is title',
           body: 'This is body',
         },
-        imageUuid: ['image_uuid1,', 'image_uuid2', 'image_uuid3'],
+        imageUrls: ['image_url1,', 'image_url2', 'image_url3'],
       },
       {
         id: 1,
@@ -78,7 +78,7 @@ export class PostListDto {
           title: 'This is title',
           body: 'This is body',
         },
-        imageUuid: ['image_uuid1,', 'image_uuid2', 'image_uuid3'],
+        imageUrls: ['image_url1,', 'image_url2', 'image_url3'],
       },
     ],
   })
