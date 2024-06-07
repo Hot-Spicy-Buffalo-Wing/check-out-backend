@@ -17,10 +17,15 @@ export class PostRepository {
   async getPost(id: number) {
     this.logger.log('getPost');
     return this.prismaService.post
-      .findUniqueOrThrow({
+      .update({
         where: {
           id,
           deletedAt: null,
+        },
+        data: {
+          views: {
+            increment: 1,
+          },
         },
         include: {
           author: {
