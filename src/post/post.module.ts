@@ -5,9 +5,10 @@ import { PostController } from './post.controller';
 import { PostRepository } from './post.repository';
 import { ConfigModule } from '@nestjs/config';
 import { PostMapper } from './post.mapper';
+import { FileModule } from 'src/file/file.module';
 
 @Module({
-  imports: [PrismaModule, ConfigModule],
+  imports: [PrismaModule, ConfigModule, FileModule],
   controllers: [PostController],
   providers: [PostService, PostRepository, PostMapper],
 })
